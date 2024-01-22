@@ -3,7 +3,7 @@ package com.example.web.service;
 import com.example.web.model.Role;
 import com.example.web.model.User;
 import com.example.web.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,59 +13,58 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
 
 
-    @Autowired
-    public UserServiceImp(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Override
-    @Transactional(readOnly = true)
-    public List<User> allUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
 
     @Override
+    @Transactional(readOnly = true)
     public void add(User user) {
         userRepository.save(user);
     }
 
     @Override
-    public void remove(long id) {
-        userRepository.delete(userRepository.getById((int) id));
+    public void remove(Integer id) {
+
     }
 
     @Override
+    public void remove(User user) {
+        userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public void edit(User user) {
         userRepository.save(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User getById(long id) {
-        return userRepository.getById((int) id);
+    public User getById(Integer id) {
+        return userRepository.getById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public User findByUsername(String userName) {
+    public Optional<User> findByUsername(String userName) {
         return userRepository.findByUsername(userName);
     }
 
     @Override
-    @Transactional(readOnly = true
-    )
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

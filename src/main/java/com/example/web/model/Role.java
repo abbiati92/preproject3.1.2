@@ -1,6 +1,5 @@
 package com.example.web.model;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,16 +9,14 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
-@Getter
 @Setter
 @NoArgsConstructor
 public class Role implements GrantedAuthority {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+
     private String name;
 
     public Role(String name) {
@@ -48,4 +45,16 @@ public class Role implements GrantedAuthority {
         return Objects.equals(id, role.id) && Objects.equals(name, role.name);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.web.model;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,42 +12,38 @@ import java.util.Objects;
 import java.util.Set;
 
 
-
 @Entity
-@Table(name = "user")
+@Table(name = "users")
+@NoArgsConstructor
+@Setter
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column
-    private int age;
+    private Integer age;
 
-    @Column(name="user_name")
+    @Column(name = "username")
     private String username;
 
-    @Column
     private String password;
 
     //   @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @ManyToMany(cascade =  CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
 
-    }
-
-    public User (String firstName, String lastName, int age, String username, String password, Set<Role> roles) {
+    public User(String firstName, String lastName, int age, String username, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -54,7 +52,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User (Long id, String firstName, String lastName, int age, String username, String password, Set<Role> roles) {
+    public User(Long id, String firstName, String lastName, int age, String username, String password, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,7 +62,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User(String иван, String иванович, int i, String admin, String admin1) {
+    public User(String firstName, String lastName, int age, String admin, String admin1) {
     }
 
     public Long getId() {
@@ -115,18 +113,6 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        return "User" +
-                "id = " + id +
-                ", firstName = " + firstName +
-                ", lastName = " + lastName +
-                ", age = " + age;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -169,7 +155,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+        return age == user.age && Objects.equals(id, user.id)
+                && Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(username, user.username)
+                && Objects.equals(password, user.password)
+                && Objects.equals(roles, user.roles);
     }
 
     @Override
